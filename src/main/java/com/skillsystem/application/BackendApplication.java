@@ -1,4 +1,4 @@
-package com.sistemaskill.backend;
+package com.skillsystem.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
