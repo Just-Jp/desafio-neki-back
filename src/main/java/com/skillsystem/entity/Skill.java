@@ -14,8 +14,10 @@ public class Skill {
     @Column(nullable = false)
     private String name;
 
+    @Column
     private String description;
 
+    @Column
     private String imageUrl;
 
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)

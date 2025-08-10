@@ -4,6 +4,7 @@ import com.skillsystem.dto.LoginRequestDTO;
 import com.skillsystem.dto.LoginResponseDTO;
 import com.skillsystem.dto.RegisterRequestDTO;
 import com.skillsystem.entity.User;
+import com.skillsystem.exception.NotFoundException;
 import com.skillsystem.repository.UserRepository;
 import com.skillsystem.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,15 +37,13 @@ public class AuthService {
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
-        Optional<User> userOpt = userRepository.findAll().stream()
-                .filter(u -> u.getUsername().equalsIgnoreCase(request.getUsername()))
-                .findFirst();
+        String username = request.getUsername() == null ? "" : request.getUsername().trim();
 
-        if (userOpt.isEmpty()) throw new RuntimeException("Invalid credentials");
+        User user = userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new NotFoundException("Invalid credentials"));
 
-        User user = userOpt.get();
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new NotFoundException("Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(user.getUsername());
